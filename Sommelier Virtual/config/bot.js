@@ -26,9 +26,9 @@ var assistant = new watson.AssistantV1({
 */
 
 var assistant = new watson.AssistantV1({
-    iam_apikey: 'oRcR95UK9hhaZWLT-tlqviK_NH2WSumIy57WcnTiXZ6R',
+    iam_apikey: '',
     version: '2019-07-07',
-    url: 'https://gateway-wdc.watsonplatform.net/assistant/api'
+    url: ''
 });
 
     // check if the workspace ID is specified in the environment
