@@ -6,7 +6,7 @@ var express = require('express'),
     routes = require('./routes'),
     http = require('http'),
     path = require('path'),
-    fs = require('fs');
+    fs = require('fs')
 var cfenv = require('cfenv');
 
 var chatbot = require('./config/bot.js');
@@ -43,7 +43,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.chat);
-//teste
+
 // =====================================
 // WATSON CONVERSATION FOR ANA =========
 // =====================================

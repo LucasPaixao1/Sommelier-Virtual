@@ -9,6 +9,7 @@
 //        isOpen = true;
 //    }
 //}
+
 $(document).ready(function () {
     var isOpen = false;
     $('.chat-header').click(function () {
@@ -58,14 +59,12 @@ function userMessage(message) {
         // Verify if there is a success code response and some text was sent
         if (xhr.status === 200 && xhr.responseText) {
             var response = JSON.parse(xhr.responseText);
-            text = response.output.text; // Only display the first response
             context = response.context; // Store the context for next round of questions
             console.log("Got response from Watson: ", JSON.stringify(response));
-           
-            for (var txt in text) {
-                displayMessage(text[txt], watson);
-            }
-
+            
+           //Teste do Gama
+           displayAssistantMessage(response,watson);
+            
         }
         else {
             console.error('Server error for Conversation. Return status of: ', xhr.statusText);
@@ -80,11 +79,12 @@ function userMessage(message) {
     xhr.send(JSON.stringify(params));
 }
 
+
 function newEvent(event) {
     // Only check for a return/enter press - Event 13
     if (event.which === 13 || event.keyCode === 13) {
         var userInput = document.getElementById('chatInput');
-        text = userInput.value; // Using text as a recurring variable through functions
+        var text = userInput.value; // Using text as a recurring variable through functions
         text = text.replace(/(\r\n|\n|\r)/gm, ""); // Remove erroneous characters
         // If there is any input then check if this is a claim step
         // Some claim steps are handled in newEvent and others are handled in userMessage
@@ -104,11 +104,12 @@ function newEvent(event) {
     }
 }
 
+
 function displayMessage(text, user) {
     var chat_body = document.getElementById('chat-body');
     var bubble = document.createElement('div');
     bubble.setAttribute("class", "bubble");
-    if (user == "user") {
+    if (user === "user") {
         bubble.className += " user";
     }
     else {
@@ -117,6 +118,80 @@ function displayMessage(text, user) {
     bubble.innerHTML = text;
     chat_body.appendChild(bubble);
     chat_body.scrollTop = chat_body.scrollHeight;
+}
+
+// Sergio Gama - tratamento dos novos tipos do Watson Assistant
+function displayAssistantMessage(response, user) {
+    var chat_body = document.getElementById('chat-body');
+        
+    for(var x in response.output.generic)
+    {
+
+    	console.log(response.output.generic[x].response_type);
+    	
+    	if(response.output.generic[x].response_type === "text")
+    	{
+		    var bubble = document.createElement('div');
+		    bubble.setAttribute("class", "bubble");
+		    if (user === "user") {
+		        bubble.className += " user";
+		    }
+		    else {
+		        bubble.className += " watson";
+		    }
+
+		    bubble.innerHTML = response.output.generic[x].text;
+		    chat_body.appendChild(bubble);
+		    chat_body.scrollTop = chat_body.scrollHeight;
+    		
+    	}
+    	else if(response.output.generic[x].response_type === "image")
+    	{
+		    var img = document.createElement('IMG');
+		    img.setAttribute("class", "image");
+		    img.setAttribute("src", response.output.generic[x].source);
+		    if (user === "user") {
+		        img.className += " user";
+		    }
+		    else {
+		        img.className += " watson";
+		    }
+
+		    chat_body.appendChild(img);
+		    chat_body.scrollTop = chat_body.scrollHeight;    		
+    	}
+    	//Sergio Gama - Mostrar o typing do Watson Assistant
+    	else if(response.output.generic[x].response_type === "pause")
+    	{
+		    var pause = document.createElement('IMG');
+		    pause.setAttribute("class", "icone");
+		    pause.setAttribute("src", "../images/typing2.gif");
+		    if (user === "user") {
+		        pause.className += " user";
+		    }
+		    else {
+		        pause.className += " watson";
+		    }
+
+		    chat_body.appendChild(pause);
+		    chat_body.scrollTop = chat_body.scrollHeight; 
+		    
+		    //Sergio Gama - Aguarda a pausa configurada no Watson Assistant
+		    //sleep(text.output.generic[x].time.toInt()); NÃO FUNCIONA
+		    //setTimeout(function wait() {return null;},text.output.generic[x].time); NÃO FUNCIONA
+		    var milliseconds = response.output.generic[x].time;
+		    var start = new Date().getTime();
+			for (var i = 0; i < 1e7; i++) {
+			    if ((new Date().getTime() - start) > milliseconds){
+			      break;
+			    }
+            }
+            
+			chat_body.removeChild(pause); 
+			
+    	}
+
+    }
 }
 
 

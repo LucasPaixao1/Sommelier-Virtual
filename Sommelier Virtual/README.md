@@ -1,25 +1,17 @@
-# Chatbot com Watson
+# Exemplo de Chatbot com Watson Assistant em Node.js
 
-This app is a front-end of a chatbot that uses Watson Conversation. 
-Please do the following steps:
-1) Create a account on https://www.bluemix.net;
-2) Go to Bluemix catalog and create a Watson Conversation service;
-3) Create a conversation as the guidance -->> 
-4) Back to Bluemix catalog and create Continuous Delivery service and follwoing steps -->>
-5) Change the file config/bot.js with your credentials of Watson Conversation and WOrkspace id create, in lines 26, 27 and 32, as the following:
-    username = "xxxx-xxxx-xxxxxx-xxxx";
-    password = "xxxxxxxx";
-    conversationWorkspace = "xxx-xxxxx-xxxxx-xxxxx-xxxx";
+Este aplicação é um demo de cliente de Chatbot em Node.js que utiliza Watson Assistant. Basta criar um Watson Assistant, colocar as credenciais neste app e fazer o deploy no Bluemix. (Exemplo de criação de Watson Assistant no arquivo: https://github.com/sergiogama/chatbot-watson-assistant/blob/master/TUTORIAL%20ChatBot.pdf).
 
+[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/sergiogama/chatbot-watson-assistant)
 
-[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/priscillaparodi/youtube-bot)
+OU
 
 ## Para executar o app localmente
 
 1. [Instalar Node.js][]
 + cd no diret'roio raiz do projeto
 + Execute `npm install` para instalar as dependências do app
-+ Altere o aquivo config/bot.js e coloque as credenciais e workspace_id do conversation nas lilnhas à seguir:
++ Altere o aquivo config/bot.js e coloque as credenciais e workspace_id do Watson Assistant nas lilnhas à seguir:
     
     username = "<username>";
     password = "<password>";

@@ -9,7 +9,7 @@ body {
 }
 
 body {
-    background-image: url(../images/gpa.jpg);
+    background-image: url(../images/chatbg9.jpg);
     background-repeat: no-repeat;
     background-size: cover;
     display: flex;
@@ -81,6 +81,20 @@ body {
     align-items: center;
     cursor: pointer;
     width: 100%;
+}
+
+.image {
+    padding: 13px 14px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+	max-width: 80%;
+}
+
+.icone {
+    padding: 13px 14px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+	max-width: 10%;
 }
 
 .chat-popup .chat-body {

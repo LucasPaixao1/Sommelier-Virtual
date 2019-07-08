@@ -10,26 +10,29 @@
  * @requires  app.js
  *
  */
-var watson = require('watson-developer-cloud');
-var CONVERSATION_NAME = "Conversation-Demo"; // conversation name goes here.
-var fs = require('fs');
-// load local VCAP configuration
-var appEnv = null;
-var conversationWorkspace, conversation;
+ // assistant name goes here.
 
-// =====================================
-// CREATE THE SERVICE WRAPPER ==========
-// =====================================
-// Create the service wrapper
-    conversation = watson.conversation({
-        url: "https://gateway.net/assistant/api"
-        , username: "<username>" // Replace <username>, including "<" and ">"
-        , password: "<password>" // Replace <password>, including "<" and ">"
-        , version_date: '2019-07-07'
-        , version: 'v1'
-    });
+// load local VCAP configuration
+
+var workspace_id;
+var watson = require('watson-developer-cloud');
+
+/*
+var assistant = new watson.AssistantV1({
+     username: "<username>"
+    , password: "<password>"
+  , version: '2018-09-20'
+});
+*/
+
+var assistant = new watson.AssistantV1({
+    iam_apikey: 'oRcR95UK9hhaZWLT-tlqviK_NH2WSumIy57WcnTiXZ6R',
+    version: '2019-07-07',
+    url: 'https://gateway-wdc.watsonplatform.net/assistant/api'
+});
+
     // check if the workspace ID is specified in the environment
-    conversationWorkspace = "<workspace_id>"; // Replace <workspace_id>, including "<" and ">"
+    //workspace_id = "<workspace_id>";
     // if not, look it up by name or create one
 // Allow clients to interact
 
@@ -59,12 +62,12 @@ var chatbot = {
                     //                });
                 }
                 else if (params) {
-                    // Send message to the conversation service with the current context
-                    conversation.message(params, function (err, data) {
+                    // Send message to the watson assistant service with the current context
+                    assistant.message(params, function (err, data) {
                             if (err) {
                                 console.log("Error in sending message: ", err);
                                 return callback(err);
-                            }else{
+                            } else {
                                 
                             var conv = data.context.conversation_id;
                             console.log("Got response from Ana: ", JSON.stringify(data));
@@ -82,8 +85,10 @@ var chatbot = {
         });
 }
 };
-
-function chatLogs(owner, conversation, response, callback) {
+// ===============================================
+// LOG MANAGEMENT FOR USER INPUT FOR ANA =========
+// ===============================================
+function chatLogs(owner, assistant, response, callback) {
     console.log("Response object is: ", response);
     // Blank log file to parse down the response object
     var logFile = {
@@ -101,7 +106,7 @@ function chatLogs(owner, conversation, response, callback) {
     var doc = {};
     Logs.find({
         selector: {
-            'conversation': conversation
+            'assistant': assistant
         }
     }, function (err, result) {
         if (err) {
@@ -115,7 +120,7 @@ function chatLogs(owner, conversation, response, callback) {
                 doc = {
                     owner: owner
                     , date: date
-                    , conversation: conversation
+                    , assistant: assistant
                     , lastContext: response.context
                     , logs: []
                 };
@@ -152,7 +157,7 @@ function chatLogs(owner, conversation, response, callback) {
 /**
  * @summary Form the parameter object to be sent to the service
  *
- * Update the context object based on the user state in the conversation and
+ * Update the context object based on the user state in the watson assistant and
  * the existence of variables.
  *
  * @function buildContextObject
@@ -160,14 +165,14 @@ function chatLogs(owner, conversation, response, callback) {
  */
 function buildContextObject(req, callback) {
     var message = req.body.text;
-
+//    var userTime = req.body.user_time;
     var context;
     if (!message) {
         message = '';
     }
-    
+    // Null out the parameter object to start building
     var params = {
-        workspace_id: conversationWorkspace
+        workspace_id: workspace_id
         , input: {}
         , context: {}
     };
@@ -180,10 +185,17 @@ function buildContextObject(req, callback) {
     else {
         context = '';
     }
-    
+    // Set parameters for payload to Watson Assistant
     params.input = {
-        text: message 
+        text: message // User defined text to be sent to service
     };
+    // This is the first message, add the user's name and get their healthcare object
+//    if ((!message || message === '') && !context) {
+//        params.context = {
+//            fname: req.user.fname
+//            , lname: req.user.lname
+//        };
+//    }
     return callback(null, params);
 }
 module.exports = chatbot;
